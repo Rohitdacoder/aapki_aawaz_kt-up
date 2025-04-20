@@ -19,6 +19,17 @@ import com.example.aapki_awaaz.components.BottomNavigationBar
 import com.example.aapki_awaaz.components.TabRow
 import com.example.aapki_awaaz.components.TopAppBar
 import com.example.aapki_awaaz.screens.TrackScreen
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import coil.compose.AsyncImage
+import com.example.aapki_awaaz.database.fetchPosts
+import com.example.aapki_awaaz.database.updatePostField
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
@@ -37,6 +48,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             .padding(16.dp)) {
             when (selectedItem) {
                 is BottomNavItem.Home -> {
+                    HomePostsScreen()
                     // Your Home screen content (replace with your actual home content)
                     // Example content for Home
 
@@ -72,3 +84,87 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         )
     }
 }
+
+@Composable
+fun HomePostsScreen() {
+    var posts by remember { mutableStateOf<List<UserPost>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        posts = fetchPosts()
+        isLoading = false
+    }
+
+    if (isLoading) {
+        CircularProgressIndicator()
+    } else {
+        LazyColumn {
+            items(posts) { post ->
+                PostCard(post)
+            }
+        }
+    }
+}
+
+
+@Composable
+fun PostCard(post: UserPost) {
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(8.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp)
+        ) {
+            AsyncImage(
+                model = post.image_url,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(text = post.text)
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                InteractionButton("👍", post.like_count) {
+                    post.like_count++
+                    CoroutineScope(Dispatchers.IO).launch {
+                        updatePostField(post.id, "like_count", post.like_count)
+                    }
+                }
+
+                InteractionButton("⚠️", post.severity_count) {
+                    post.severity_count++
+                    CoroutineScope(Dispatchers.IO).launch {
+                        updatePostField(post.id, "severity_count", post.severity_count)
+                    }
+                }
+
+                InteractionButton("🚨", post.urgency_count) {
+                    post.urgency_count++
+                    CoroutineScope(Dispatchers.IO).launch {
+                        updatePostField(post.id, "urgency_count", post.urgency_count)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun InteractionButton(emoji: String, count: Int, onClick: () -> Unit) {
+    Button(onClick = onClick) {
+        Text(text = "$emoji $count")
+    }
+}
+

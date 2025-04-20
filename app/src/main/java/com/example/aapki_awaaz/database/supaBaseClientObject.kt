@@ -1,8 +1,13 @@
 package com.example.aapki_awaaz.database
 
+import com.example.aapki_awaaz.screens.UserPost
 import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.plugins.SupabasePluginProvider
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.realtime.Realtime
+import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
+import io.ktor.client.plugins.auth.Auth
 
 object SupabaseClient {
     val client = createSupabaseClient(
@@ -12,6 +17,9 @@ object SupabaseClient {
     ) {
         install(Postgrest)  // For interacting with the database (PostgREST)
         //install(storage)    // For interacting with file storage
+        //install(Auth)
+        install(Realtime)
+        install(Storage)
     }
-}
 
+}

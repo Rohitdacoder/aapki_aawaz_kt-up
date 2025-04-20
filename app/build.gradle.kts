@@ -69,6 +69,32 @@ dependencies {
     implementation("io.ktor:ktor-client-serialization:3.1.1")
 
 
+    // Supabase
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.1.1"))
+    implementation("io.github.jan-tennert.supabase:auth-kt")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.github.jan-tennert.supabase:realtime-kt")
+    implementation("io.github.jan-tennert.supabase:storage-kt")
+
+// Ktor
+    implementation("io.ktor:ktor-client-core:3.1.1")
+    implementation("io.ktor:ktor-client-cio:3.1.1")
+    implementation("io.ktor:ktor-client-okhttp:3.1.1")
+    implementation("io.ktor:ktor-client-android:3.1.1")
+    implementation("io.ktor:ktor-client-auth:3.1.1")
+    implementation("io.ktor:ktor-client-logging:3.1.1")
+    implementation("io.ktor:ktor-client-content-negotiation:3.1.1")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:3.1.1")
+
+// Coil (for Images)
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+// OkHttp Logging
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+
+
+
 
 
     implementation("androidx.compose.material:material-icons-extended:1.5.4") // Or latest version
