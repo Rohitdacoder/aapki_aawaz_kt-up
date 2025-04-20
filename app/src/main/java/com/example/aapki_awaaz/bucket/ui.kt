@@ -1,18 +1,17 @@
 package com.example.aapki_awaaz.bucket
 
+import android.R.attr.enabled
 import android.content.Context
 //import android.icu.util.TimeUnit
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TimePicker
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.aapki_awaaz.Boom.AnimatedButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,12 +49,15 @@ fun UploadButton(context: Context, mimeType: String, fileType: String, coroutine
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Button(onClick = { launcher.launch(mimeType) }) {
-            Text("Select $fileType")
-        }
+        AnimatedButton(
+            text = "Select $fileType",
+            onClickAction = { launcher.launch(mimeType) },
+            enabled = true
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        Button(
-            onClick = {
+        AnimatedButton(
+            text = "Upload $fileType",
+            onClickAction = {
                 selectedUri?.let { uri ->
                     coroutineScope.launch {
                         uploadFileToSupabase(context, uri)
@@ -63,9 +65,7 @@ fun UploadButton(context: Context, mimeType: String, fileType: String, coroutine
                 }
             },
             enabled = selectedUri != null
-        ) {
-            Text("Upload $fileType")
-        }
+        )
     }
 }
 

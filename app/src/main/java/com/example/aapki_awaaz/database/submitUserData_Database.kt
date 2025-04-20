@@ -14,9 +14,9 @@ data class Complaint(
     val ministry: String,
     val grievance: String,
     val address: String,
-    val pdfUri: String? = null, // Can be null
+    /*val pdfUri: String? = null, // Can be null
     val imageUri: String? = null, // Can be null
-    val videoUri: String? = null // Can be null
+    val videoUri: String? = null */// Can be null
 )
 
 // Function to submit a complaint to the 'complaints' table in Supabase
@@ -27,9 +27,9 @@ suspend fun submitComplaint(
     ministry: String,
     grievance: String,
     address: String,
-    pdfUri: Uri?,
+    /*pdfUri: Uri?,
     imageUri: Uri?,
-    videoUri: Uri?
+    videoUri: Uri?*/
 ) {
     return withContext(Dispatchers.IO) {
         try {
@@ -41,9 +41,9 @@ suspend fun submitComplaint(
                 ministry = ministry,
                 grievance = grievance,
                 address = address,
-                pdfUri = pdfUri?.toString(), // Convert Uri to String
+                /*pdfUri = pdfUri?.toString(), // Convert Uri to String
                 imageUri = imageUri?.toString(), // Convert Uri to String
-                videoUri = videoUri?.toString() // Convert Uri to String
+                videoUri = videoUri?.toString() */// Convert Uri to String
             )
 
             // Insert the complaint into the 'complaints' table

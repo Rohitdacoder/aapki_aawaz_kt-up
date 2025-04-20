@@ -1,16 +1,8 @@
 package com.example.aapki_awaaz.screens
 
-import android.net.Uri
-import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.core.VisibilityThreshold
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -24,11 +16,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.aapki_awaaz.Boom.AnimatedButton
+import com.example.aapki_awaaz.bucket.UploadScreen
 import fetchCities
 import fetchStates
 import submitComplaint
 import kotlinx.coroutines.launch
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,30 +40,12 @@ fun ComplaintFormScreen(modifier: Modifier = Modifier) {
     var ministry by remember { mutableStateOf("") }
     var grievance by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
-    var selectedPdfUri by remember { mutableStateOf<Uri?>(null) }
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    var selectedVideoUri by remember { mutableStateOf<Uri?>(null) }
-
-    // File Selection
-    val pdfPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument(),
-        onResult = { uri -> selectedPdfUri = uri }
-    )
-    val imagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> selectedImageUri = uri }
-    )
-    val videoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> selectedVideoUri = uri }
-    )
 
     // States and Cities Data
     var states by remember { mutableStateOf<List<String>>(emptyList()) }
     var cities by remember { mutableStateOf<List<String>>(emptyList()) }
     var filteredStates by remember { mutableStateOf<List<String>>(emptyList()) }
     var filteredCities by remember { mutableStateOf<List<String>>(emptyList()) }
-
 
     // Expanded State for dropdowns
     var expandedState by remember { mutableStateOf(false) }
@@ -80,7 +54,6 @@ fun ComplaintFormScreen(modifier: Modifier = Modifier) {
     // Manage query of State and City
     var stateQuery by remember { mutableStateOf("") }
     var cityQuery by remember { mutableStateOf("") }
-
 
     // Fetch States and Cities on initial composition
     LaunchedEffect(Unit) {
@@ -125,10 +98,7 @@ fun ComplaintFormScreen(modifier: Modifier = Modifier) {
                     complaintTo = complaintTo,
                     ministry = ministry,
                     grievance = grievance,
-                    address = address,
-                    pdfUri = selectedPdfUri,
-                    imageUri = selectedImageUri,
-                    videoUri = selectedVideoUri
+                    address = address
                 )
                 // Optionally clear the form or show a success message
                 selectedState = ""
@@ -137,9 +107,6 @@ fun ComplaintFormScreen(modifier: Modifier = Modifier) {
                 ministry = ""
                 grievance = ""
                 address = ""
-                selectedPdfUri = null
-                selectedImageUri = null
-                selectedVideoUri = null
                 stateQuery = ""
                 cityQuery = ""
 
@@ -295,95 +262,9 @@ fun ComplaintFormScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done)
             )
+
             Spacer(modifier = Modifier.height(16.dp))
-
-            //FileSelectAndUploadScreen(context = context)
-            // File Select Buttons
-            /*Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Button(
-                    onClick = { pdfPickerLauncher.launch(arrayOf("application/pdf")) },
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Text("Select PDF")
-                }
-                Button(
-                    onClick = {
-                        imagePickerLauncher.launch(
-                            PickVisualMediaRequest(
-                                mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly
-                            )
-                        )
-                    },
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Text("Select Image")
-                }
-                Button(
-                    onClick = {
-                        videoPickerLauncher.launch(
-                            PickVisualMediaRequest(
-                                mediaType = ActivityResultContracts.PickVisualMedia.VideoOnly
-                            )
-                        )
-                    },
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Text("Select Video")
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Submit Button
-            Button(
-                onClick = { submitForm() },
-                modifier = Modifier.fillMaxWidth(),
-                enabled = !isLoading,
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                Text("Submit Complaint")
-            }*/
-            Row(
-                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                AnimatedButton(
-                    text = "Select PDF",
-                    onClickAction = {
-                        pdfPickerLauncher.launch(arrayOf("application/pdf"))
-                    },
-                    modifier = Modifier.weight(1f).height(60.dp)
-                )
-
-                AnimatedButton(
-                    text = "Select Image",
-                    onClickAction = {
-                        imagePickerLauncher.launch(
-                            PickVisualMediaRequest(
-                                mediaType = ActivityResultContracts.PickVisualMedia.ImageOnly
-                            )
-                        )
-                    },
-                    modifier = Modifier.weight(1f).height(60.dp)
-                )
-
-                AnimatedButton(
-                    text = "Select Video",
-                    onClickAction = {
-                        videoPickerLauncher.launch(
-                            PickVisualMediaRequest(
-                                mediaType = ActivityResultContracts.PickVisualMedia.VideoOnly
-                            )
-                        )
-                    },
-                    modifier = Modifier.weight(1f).height(60.dp)
-                )
-            }
+            UploadScreen(context = LocalContext.current)
 
             Spacer(modifier = Modifier.height(16.dp))
 
